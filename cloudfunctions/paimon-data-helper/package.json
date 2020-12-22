@@ -1,0 +1,24 @@
+{
+  "name": "paimon-data-helper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack-cli --config webpack.config.ts",
+    "deploy": "npm run build && tcb functions:deploy paimon-data-helper",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudbase/node-sdk": "1.1.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.5",
+    "@types/node": "^14.14.14",
+    "@types/webpack": "^4.41.25",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3",
+    "webpack-cli": "^4.2.0"
+  }
+}
