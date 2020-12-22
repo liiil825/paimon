@@ -30,10 +30,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [
-    '~theme/element-variables.sass',
-    '~assets/sass/main.sass',
-  ],
+  css: ['~assets/sass/main.sass'],
   /*
    ** Plugins to load before mounting the App
    */
@@ -49,11 +46,8 @@ export default {
    */
   modules: [],
   styleResources: {
-    sass: ['~theme/*.sass'],
+    sass: ['~assets/sass/main.sass'],
   },
-  sassResources: [
-    '~theme/*.sass'
-  ],
   router: {
     base: "/nuxt-ssr"
   },
@@ -61,15 +55,12 @@ export default {
    ** Build configuration
    */
   build: {
-    vender:[
-      'element-ui'
-    ],
     babel: {
       plugins: [
         [ 'component', 
           {
             'libraryName': 'element-ui',
-            'styleLibraryName': 'theme-chalk'
+            'styleLibraryName': '~theme'
           },
         ] 
       ],

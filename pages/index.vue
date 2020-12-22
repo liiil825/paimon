@@ -6,11 +6,36 @@
       <h2 class="subtitle">原神数据分析系统</h2>
       <NuxtLink to="character">角色</NuxtLink>
       <NuxtLink to="weapon">武器</NuxtLink>
+      <el-button @click="handleClick">给我数据啊</el-button>
     </div>
   </div>
 </template>
 
+<script lang="ts">
+import { Component, Vue } from '~/interfaces/cloudbase'
+@Component
+export default class HomePage extends Vue {
+  transition(to: any, from: any) {
+    if (!from) {
+      return 'slide-left'
+    }
+    return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
+  }
+  async handleClick() {
+    this.$cloudbase.callFunction({
+      name: 'paimon-data-helper',
+      data: {
+        _id: 'eb0c51035fdc9d99001eca843b20d132',
+        // nickname: 'Diluc'
+      }
+    })
+  }
+}
+</script>
+
 <style>
+.home-enter-active, .home-leave-active { transition: opacity .5s; }
+.home-enter, .home-leave-active { opacity: 0; }
 .container {
   margin: 0 auto;
   min-height: 100vh;

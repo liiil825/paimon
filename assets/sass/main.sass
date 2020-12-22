@@ -1,3 +1,5 @@
+@import 'variables.scss'
+
 html 
   // font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
   //   Roboto, 'Helvetica Neue', Arial, sans-serif
@@ -9,7 +11,6 @@ html
   -webkit-font-smoothing: antialiased
   box-sizing: border-box
 
-
 *,
 *:before,
 *:after 
@@ -18,3 +19,11 @@ html
 
 ol, li
   list-style: none
+
+.el-form-item-rate
+  .el-form-item__content
+    transform: translateY(25%)
+
+.el-input-number,
+.el-select
+  width: 100%

@@ -1,19 +1,24 @@
+interface stateDT {
+  _id: string | null,
+  dialogVisible: boolean,
+}
+
 export const state = () => ({
   dialogVisible: false,
   _id: '',
 })
 
 export const mutations = {
-  openDialog (state) {
+  openDialog (state: stateDT) {
     state.dialogVisible = true
   },
-  closeDialog (state) {
+  closeDialog (state: stateDT) {
     state.dialogVisible = false
   },
-  selectID (state, _id) {
+  selectID (state: stateDT, _id: string) {
     state._id = _id
   },
-  clearID (state) {
+  clearID (state: stateDT) {
     state._id = null
   },
 }

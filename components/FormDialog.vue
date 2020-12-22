@@ -13,35 +13,26 @@
   </el-dialog>
 </template>
 
-<script>
-  export default {
-    props: {
-      title: {
-        type: String,
-        required: false,
-      },
-      info: {
-        type: String,
-        required: true,
-      },
-      visible: {
-        type: Boolean,
-        required: true,
-      },
-    },
-    data() {
-      return {
-        isOpen: this.visible,
-        titleName: this.title || '提示',
-      };
-    },
-    methods: {
-      fnCancle() {
-        this.$store.commit('closeDialog')
-      },
-      confirm() {
-        this.$emit('fn-confirm')
-      },
-    }
-  };
+<script lang="ts">
+import { Component, Vue, Prop } from '~/interfaces/cloudbase'
+
+@Component
+export default class FormDialog extends Vue {
+  @Prop(String) title: string
+  @Prop(String) info: string
+  @Prop(Boolean) visible: boolean
+  get isOpen() {
+    return this.visible
+  }
+  get titleName() {
+    return this.title || '提示'
+  }
+
+  fnCancle() {
+    this.$store.commit('closeDialog')
+  }
+  confirm() {
+    this.$emit('fn-confirm')
+  }
+}
 </script>
