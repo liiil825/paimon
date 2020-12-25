@@ -4,6 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "strictPropertyInitialization": false,
+    "jsx": "preserve",
     "lib": [
       "ESNext",
       "ESNext.AsyncIterable",

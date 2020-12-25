@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from '~/interfaces/cloudbase'
+import { Component, Vue } from 'vue-property-decorator'
 @Component
 export default class Layout extends Vue {
   get envId() {

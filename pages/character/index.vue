@@ -13,6 +13,11 @@
               width="180">
             </el-table-column>
             <el-table-column
+              prop="Weapon_Type"
+              label="武器类型"
+              width="180">
+            </el-table-column>
+            <el-table-column
               prop="level"
               label="等级"
               width="180">
@@ -36,6 +41,14 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination
+            layout="prev, pager, next"
+            @prev-click="prevPage"
+            @next-click="nextPage"
+            @current-change="changePage"
+            :total="$store.state.pageTotal"
+          >
+          </el-pagination>
         </el-col>
       </el-row>
       <form-dialog :visible="visible" :info="dialogInfo" @fn-confirm="handleDelete">
@@ -44,12 +57,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from '~/interfaces/cloudbase'
+import { Component, Vue } from 'vue-property-decorator'
+import PaginationVue from '~/mixin/pagination'
 import characterDT from '~/interfaces/data/character'
 import linkType from '~/interfaces/view/link'
 
 @Component
-export default class CharacterPage extends Vue {
+export default class CharacterPage extends PaginationVue {
   private tableData: Array<characterDT> = []
   private pageName: string = '角色信息'
   private errorMsg: string = ''
@@ -63,23 +77,25 @@ export default class CharacterPage extends Vue {
   transition: string = 'bounce'
 
   async mounted() {
-    await this.$_fetchTable()
+    await this.$_fetchTable(1)
   }
 
-  async $_fetchTable() {
+  async $_fetchTable(pageNumber: number) {
     this.loading = true
+    const { pageCount } = this.$store.state
     try {
       const res = await this.$cloudbase.callFunction({
         name: 'db-helper',
         data: {
           ACTION: 'GET',
           collection: 'character',
-          page: 1,
-          count: 10
+          page: pageNumber,
+          count: pageCount
         }
       });
-      console.log(res)
-      this.tableData = res.result.data
+      const { data, total } = res.result
+      this.tableData = data
+      this.$store.commit('setPage', { pageNumber, pageTotal: total })
     } catch (e) {
       this.errorMsg = e.message
       console.log(e)
@@ -88,7 +104,7 @@ export default class CharacterPage extends Vue {
   }
   $_dialogDelete($index: number, row: characterDT) {
     const { _id } = row
-    this.dialogInfo = `确定要删除角色<b class='color-primary'>${row.name}</b>吗？`
+    this.dialogInfo = `确定要删除武器<b class='color-primary'>${row.name}</b>吗？`
     this.$store.commit('openDialog')
     this.$store.commit('selectID', _id)
   }
@@ -108,12 +124,10 @@ export default class CharacterPage extends Vue {
       data: {
         ACTION: 'DELETE',
         collection: 'character',
-        page: 1,
-        count: 10,
         _id
       }
     })
-    this.$_fetchTable()
+    this.$_fetchTable(this.$store.state.pageNumber)
   }
 }
 </script>

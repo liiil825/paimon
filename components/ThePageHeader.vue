@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from '~/interfaces/cloudbase'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import linkType from '~/interfaces/view/link'
 
 @Component

@@ -17,5 +17,21 @@ module.exports = async (event, context) => {
     return await col.where({ _id }).get();
   }
 
-  return await col.limit(count).skip((page - 1) * count).get();
+  const { condiction } = event
+  if (condiction) {
+    const { total } = await col.where(condiction).count()
+
+    const data = await col.where(condiction).limit(count).skip((page - 1) * count).get()
+    return {
+      total,
+      ...data
+    }
+  }
+
+  const { total } = await col.count()
+  const data = await col.limit(count).skip((page - 1) * count).get()
+  return {
+    total,
+    ...data
+  }
 };

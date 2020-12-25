@@ -7,6 +7,8 @@ for (let i = 0; i < count; i++) {
 
 import * as tcb from '@cloudbase/node-sdk'
 import * as _ from 'lodash'
+import { getChartacterDMGBase } from './util'
+import getGrwonList from './get-grown-list'
 
 const app = tcb.init({
   env: tcb.SYMBOL_CURRENT_ENV,
@@ -32,6 +34,7 @@ export default async function getData({
        msg: '请传入_id, name, nickname中的一个'
      }
    }
+  // const condition = { nickname: 'Diluc' }
    let rel = await db.collection('character').where(condition).get()
    const data = _.get(rel, 'data[0]')
    if (_.isEmpty(data)) {
@@ -53,13 +56,10 @@ export default async function getData({
    } = data
 
    rel = await db.collection('weapon').where({ Weapon_Type }).get()
-   return {
-     Base_ATK,
-     ATK_Percent,
-     CRIT_Rate,
-     CRIT_DMG,
-     Physical_DMG_Bonus,
-     Elemental_DMG_Bonus,
-     Weapons: rel.data
+   let result = []
+   for (let i = 0; i < rel.data.length; i++) {
+     const baseData = getChartacterDMGBase(data, rel.data[i])
+     result.push(getGrwonList(baseData))
    }
+   return result
 }

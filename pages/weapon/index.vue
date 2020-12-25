@@ -18,6 +18,13 @@
               width="180">
             </el-table-column>
             <el-table-column
+              label="武器类型"
+              width="180">
+              <template slot-scope="scope">
+                <p>{{getWeaponName(scope.row.Weapon_Type)}}</p>
+              </template>
+            </el-table-column>
+            <el-table-column
               prop="Base_ATK"
               label="基础攻击力"
               width="180">
@@ -36,6 +43,14 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination
+            layout="prev, pager, next"
+            @prev-click="prevPage"
+            @next-click="nextPage"
+            @current-change="changePage"
+            :total="$store.state.pageTotal"
+          >
+          </el-pagination>
         </el-col>
       </el-row>
       <form-dialog :visible="visible" :info="dialogInfo" @fn-confirm="handleDelete">
@@ -44,18 +59,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from '~/interfaces/cloudbase'
+import { Component, Vue } from 'vue-property-decorator'
+import PaginationVue from '~/mixin/pagination'
+import _ from 'lodash'
 import weaponDT from '~/interfaces/data/weapon'
 import linkType from '~/interfaces/view/link'
+import { Weapon_Type_Name } from '~/interfaces/data/character'
 
 @Component
-export default class WeaponPage extends Vue {
+export default class WeaponPage extends PaginationVue {
   private tableData: Array<weaponDT> = []
   private pageName: string = '武器信息'
   private errorMsg: string = ''
+
   private dialogInfo: string = '确定要删除吗？'
   private links: Array<linkType> = [{
     name: '添加',
+
     to: '/weapon/edit'
   }]
   private visible: Boolean = false
@@ -63,26 +83,35 @@ export default class WeaponPage extends Vue {
   transition: string = 'slide-bottom'
   
   async mounted() {
-    await this.$_fetchTable()
+    await this.$_fetchTable(1)
   }
-  async $_fetchTable() {
+
+  getWeaponName(weaponTyep: number) {
+    return Weapon_Type_Name[weaponTyep]
+  }
+
+  async $_fetchTable(pageNumber: number) {
     this.loading = true;
+    const { pageCount } = this.$store.state
     try {
       const res = await this.$cloudbase.callFunction({
         name: 'db-helper',
         data: {
           ACTION: 'GET',
           collection: 'weapon',
-          page: 1,
-          count: 10
+          page: pageNumber,
+          count: pageCount
         }
       });
-      console.log(res)
-      this.tableData = res.result.data
+      const { data, total } = res.result
+      this.$store.commit('setPage', { pageNumber, pageTotal: total })
+      console.log({ total })
+      this.tableData = data
     } catch (e) {
       this.errorMsg = e.message
       console.log(e)
     }
+    console.log(this.$store.state.pageTotal)
     this.loading = false
   }
   $_dialogDelete($index: number, row: weaponDT) {
@@ -107,12 +136,10 @@ export default class WeaponPage extends Vue {
       data: {
         ACTION: 'DELETE',
         collection: 'weapon',
-        page: 1,
-        count: 10,
         _id
       }
     });
-    this.$_fetchTable()
+    this.$_fetchTable(this.$store.state.pageNumber)
   }
 }
 </script>

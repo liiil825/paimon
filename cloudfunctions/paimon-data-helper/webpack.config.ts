@@ -5,6 +5,7 @@ module.exports = {
 	entry: './main.ts',
 	target: "async-node",
 	externals: [nodeExternals()],
+	// devtool: 'eval-source-map',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'main.js',

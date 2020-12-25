@@ -37,7 +37,7 @@ export default {
   plugins: [{
     src: '~plugins/cloudbase', ssr: false
   }, {
-    src: '~plugins/filters', ssr: true
+    src: '~plugins/echars', ssr: false
   }, {
     src: '~plugins/element-ui/index.ts', ssr: true
   }],
