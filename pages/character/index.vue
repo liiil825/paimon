@@ -16,6 +16,9 @@
               prop="Weapon_Type"
               label="武器类型"
               width="180">
+              <template slot-scope="scope">
+                <p>{{getWeaponName(scope.row.Weapon_Type)}}</p>
+              </template>
             </el-table-column>
             <el-table-column
               prop="level"
@@ -57,13 +60,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import PaginationVue from '~/mixin/pagination'
+import WeaponNameVue from '~/mixin/weapon-type'
 import characterDT from '~/interfaces/data/character'
 import linkType from '~/interfaces/view/link'
 
 @Component
-export default class CharacterPage extends PaginationVue {
+export default class CharacterPage extends Mixins(PaginationVue,
+ WeaponNameVue) {
   private tableData: Array<characterDT> = []
   private pageName: string = '角色信息'
   private errorMsg: string = ''
@@ -131,6 +136,3 @@ export default class CharacterPage extends PaginationVue {
   }
 }
 </script>
-
-<style>
-</style>

@@ -5,31 +5,63 @@
       <h1 class="title">派蒙永远的伙伴</h1>
       <h2 class="subtitle">原神数据分析系统</h2>
       <div id="main"></div>
-      <NuxtLink to="character">角色</NuxtLink>
-      <NuxtLink to="weapon">武器</NuxtLink>
-      <el-button @click="handleClick">给我数据啊</el-button>
+      <el-row :gutter="20" type="flex" justify="center" align="center">
+        <el-col :span="10">
+          <el-select v-model="characterId" placeholder="请选择角色">
+            <el-option
+              v-for="item in characterList"
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
+            </el-option>
+          </el-select>
+          <el-button @click="handleClick">查询</el-button>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator' 
+import characterDT from '~/interfaces/data/character'
 
 @Component
 export default class HomePage extends Vue {
-  transition(to: any, from: any) {
-    if (!from) {
-      return 'slide-left'
+  private loading: Boolean = true
+  private characterList: Array<characterDT> = []
+  private errorMsg: string = ''
+  private characterId: string = ''
+
+  async mounted() {
+    await this.$_fetchTable(1)
+  }
+
+  async $_fetchTable(pageNumber: number) {
+    this.loading = true
+    try {
+      const res = await this.$cloudbase.callFunction({
+        name: 'db-helper',
+        data: {
+          ACTION: 'GET',
+          collection: 'character',
+          page: pageNumber,
+          count: 100
+        }
+      });
+      const { data, total } = res.result
+      this.characterList = data
+    } catch (e) {
+      this.errorMsg = e.message
+      console.log(e)
     }
-    return +to.query.page < +from.query.page ? 'slide-right' : 'slide-left'
+    this.loading = false
   }
   async handleClick() {
     const rel = await this.$cloudbase.callFunction({
       name: 'paimon-data-helper',
       data: {
-        // _id: 'eb0c51035fdc9d99001eca843b20d132',
-        // name: '迪卢克',
-        nickname: 'Diluc'
+        _id: this.characterId
       }
     })
     const xAxis = []

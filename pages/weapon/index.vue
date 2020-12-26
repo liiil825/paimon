@@ -59,15 +59,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import PaginationVue from '~/mixin/pagination'
+import WeaponNameVue from '~/mixin/weapon-type'
 import _ from 'lodash'
 import weaponDT from '~/interfaces/data/weapon'
 import linkType from '~/interfaces/view/link'
 import { Weapon_Type_Name } from '~/interfaces/data/character'
 
 @Component
-export default class WeaponPage extends PaginationVue {
+export default class WeaponPage extends Mixins(PaginationVue,
+ WeaponNameVue) {
   private tableData: Array<weaponDT> = []
   private pageName: string = '武器信息'
   private errorMsg: string = ''
@@ -84,10 +86,6 @@ export default class WeaponPage extends PaginationVue {
   
   async mounted() {
     await this.$_fetchTable(1)
-  }
-
-  getWeaponName(weaponTyep: number) {
-    return Weapon_Type_Name[weaponTyep]
   }
 
   async $_fetchTable(pageNumber: number) {
